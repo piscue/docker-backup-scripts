@@ -9,8 +9,6 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         mkdir $container_name
 
         # Uploading image
-
-
         echo -n "$container_name - image to Dropbox - "
         docker run -it --rm --user=$(id -u):$(id -g) \
         --name dropbox-$container_name-image-backup \
@@ -22,12 +20,10 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         echo "OK"
 
         # remove local image
-
-        rm $backup_path/$container_name/$container_name-image-$(date +'%Y%m%d').tar
+        rm -f $backup_path/$container_name/$container_name-image-$(date +'%Y%m%d').tar
 
         # Uploading volume
         echo -n "$container_name - volume to Dropbox - "
-
         docker run -it --rm --user=$(id -u):$(id -g) \
         --name dropbox-$container_name-volume-backup \
         -v $PWD/config:/config \
@@ -38,6 +34,5 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         echo "OK"
 
         # remove local volume
-
-        rm $backup_path/$container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz
+        rm -f $backup_path/$container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz
 done
