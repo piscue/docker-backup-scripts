@@ -13,7 +13,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
 
         echo -n "$container_name - image to Dropbox - "
         docker run -it --rm --user=$(id -u):$(id -g) \
-        --name dropbox-$container_name-image-backup
+        --name dropbox-$container_name-image-backup \
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
         peez/dropbox-uploader \
@@ -29,7 +29,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         echo -n "$container_name - volume to Dropbox - "
 
         docker run -it --rm --user=$(id -u):$(id -g) \
-        --name dropbox-$container_name-volume-backup
+        --name dropbox-$container_name-volume-backup \
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
         peez/dropbox-uploader \
