@@ -12,7 +12,7 @@ sudo cp *.sh /opt/bin
 sudo chmod +x /opt/bin/*sh
 
 # copy service and time to the system
-cd config
+cd coreos-timer
 sudo cp backup-containers* /etc/systemd/system/
 
 # enabling timer
