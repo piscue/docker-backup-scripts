@@ -43,5 +43,3 @@ echo ""
 # backup config
 
 # backup something else?
-
-# sync to outside?
