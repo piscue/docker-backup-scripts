@@ -9,6 +9,7 @@ cd "${BASH_SOURCE%/*}" || exit
 cd ..
 sudo mkdir -p /opt/bin
 sudo cp *.sh /opt/bin
+sudo cp -R config /opt/bin
 sudo chmod +x /opt/bin/*sh
 
 # copy service and time to the system
