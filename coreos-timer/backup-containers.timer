@@ -6,3 +6,6 @@ Description=Backup all containers at 01:00 daily
 [Timer]
 OnCalendar=*-*-* 01:00:00
 Unit=backup-containers.service
+
+[Install]
+WantedBy=basic.target

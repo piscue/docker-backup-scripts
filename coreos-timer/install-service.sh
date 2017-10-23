@@ -17,5 +17,5 @@ sudo cp backup-containers* /etc/systemd/system/
 
 # enabling timer
 sudo systemctl enable /etc/systemd/system/backup-containers.timer
-sudo systemctl start  /etc/systemd/system/backup-containers.timer
+sudo systemctl start /etc/systemd/system/backup-containers.timer
 sudo systemctl enable /etc/systemd/system/backup-containers.service
