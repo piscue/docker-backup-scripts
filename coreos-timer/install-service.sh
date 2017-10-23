@@ -7,15 +7,15 @@
 
 cd "${BASH_SOURCE%/*}" || exit
 cd ..
-mkdir -p /opt/bin
-cp *.sh /opt/bin
-chmod +x /opt/bin/*sh
+sudo mkdir -p /opt/bin
+sudo cp *.sh /opt/bin
+sudo chmod +x /opt/bin/*sh
 
 # copy service and time to the system
 cd config
-cp backup-containers* /etc/systemd/system/
+sudo cp backup-containers* /etc/systemd/system/
 
 # enabling timer
-systemctl enable /etc/systemd/system/backup-containers.timer
-systemctl start  /etc/systemd/system/backup-containers.timer
-systemctl enable /etc/systemd/system/backup-containers.service
+sudo systemctl enable /etc/systemd/system/backup-containers.timer
+sudo systemctl start  /etc/systemd/system/backup-containers.timer
+sudo systemctl enable /etc/systemd/system/backup-containers.service
