@@ -35,5 +35,4 @@ you can comment the line **source sync-dropbox.sh** on **backup-all.sh**
 
 Create a cron if you want to run it often.
 
-For CoreOS I supply a timer to allow run it daily, but before installing
-run it standalone to create
+For CoreOS, I supply a timer to allow run it daily with an installation script
