@@ -15,7 +15,7 @@ your current backup folder
 
 Also, on dropbox you must create an App to store this backups, refer to
 https://www.dropbox.com/developers to get your **Generated access token**
-before running it
+before running it and placed inside the **config/dropbox-uploader.conf** file
 
 Give permissions to all sh files in the folder
 ```bash

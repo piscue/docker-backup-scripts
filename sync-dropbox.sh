@@ -2,7 +2,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         do container_name=$i
 
         # Creating container folder
-        docker run -it --rm --user=$(id -u):$(id -g) \
+        docker run --rm --user=$(id -u):$(id -g) \
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
         peez/dropbox-uploader \
@@ -11,7 +11,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         # Uploading image
         echo "$container_name - image to Dropbox "
         # TODO check if the file exists
-        docker run -it --rm --user=$(id -u):$(id -g) \
+        docker run --rm --user=$(id -u):$(id -g) \
         --name dropbox-$container_name-image-backup \
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
@@ -27,7 +27,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         # Uploading volume
         echo "$container_name - volume to Dropbox "
         # TODO check if the file exists
-        docker run -it --rm --user=$(id -u):$(id -g) \
+        docker run --rm --user=$(id -u):$(id -g) \
         --name dropbox-$container_name-volume-backup \
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
