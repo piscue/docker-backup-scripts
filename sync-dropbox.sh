@@ -18,7 +18,6 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         peez/dropbox-uploader \
         upload $container_name/$container_name-image-$(date +'%Y%m%d').tar \
         $container_name/$container_name-image-$(date +'%Y%m%d').tar
-        echo "OK"
 
         # remove local image, TODO creating a condition to know if the file
         # uploaded well before deleting
@@ -34,7 +33,6 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         peez/dropbox-uploader \
         upload $container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz \
         $container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz
-        echo "OK"
 
         # remove local volume, TODO creating a condition to know if the file
         # uploaded well before deleting
