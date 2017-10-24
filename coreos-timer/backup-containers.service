@@ -1,0 +1,9 @@
+[Unit]
+Description=Backup all running containers
+
+[Service]
+Type=oneshot
+ExecStart=/opt/bin/backup-all.sh
+
+[Install]
+WantedBy=backup-containers.timer

@@ -1,0 +1,11 @@
+# https://www.freedesktop.org/software/systemd/man/systemd.timer.html
+
+[Unit]
+Description=Backup all containers at 01:00 daily
+
+[Timer]
+OnCalendar=*-*-* 01:00:00
+Unit=backup-containers.service
+
+[Install]
+WantedBy=multi-user.target
