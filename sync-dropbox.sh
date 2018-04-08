@@ -16,12 +16,12 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
         peez/dropbox-uploader \
-        upload $container_name/$container_name-image-$(date +'%Y%m%d').tar \
-        $container_name/$container_name-image-$(date +'%Y%m%d').tar
+        upload $container_name/$container_name-image.tar \
+        $container_name/$container_name-image.tar && \
 
         # remove local image, TODO creating a condition to know if the file
         # uploaded well before deleting
-        rm -f $backup_path/$container_name/$container_name-image-$(date +'%Y%m%d').tar
+        rm -f $backup_path/$container_name/$container_name-image.tar
 
         # Uploading volume
         echo "$container_name - volume to Dropbox "
@@ -31,10 +31,10 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         -v $PWD/config:/config \
         -v $backup_path:/workdir \
         peez/dropbox-uploader \
-        upload $container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz \
-        $container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz
+        upload $container_name/$container_name-volume.tar.xz \
+        $container_name/$container_name-volume.tar.xz && \
 
         # remove local volume, TODO creating a condition to know if the file
         # uploaded well before deleting
-        rm -f $backup_path/$container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz
+        rm -f $backup_path/$container_name/$container_name-volume.tar.xz
 done

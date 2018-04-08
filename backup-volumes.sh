@@ -7,7 +7,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
   	    -v $backup_path:/backup \
   	    -e TAR_OPTS="$tar_opts" \
   	    piscue/docker-backup \
-        backup "$container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz"
+        backup "$container_name/$container_name-volume.tar.xz"
 	      echo "OK"
         #md5sum $backup_path/$container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz \
         #> $backup_path/$container_name/$container_name-volume-$(date +'%Y%m%d').tar.xz.md5
