@@ -6,7 +6,4 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         save_file="$backup_path/$container_name/$container_name-image.tar"
         docker save -o $save_file $container_image
         echo "OK"
-        # create a container that does md5
-        #md5sum $save_file $save_file.md5
-        #echo "md5"
 done
