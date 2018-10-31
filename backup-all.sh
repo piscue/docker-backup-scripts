@@ -37,9 +37,3 @@ echo ""
 source sync-dropbox.sh
 
 echo ""
-
-# backup variables
-
-# backup config
-
-# backup something else?
