@@ -2,7 +2,7 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         do container_name=$i
         mkdir -p $backup_path/$container_name
         echo -n "$container_name - "
-	docker run --rm \
+	docker run --rm --userns=host \
   	--volumes-from $container_name \
   	-v $backup_path:/backup \
   	-e TAR_OPTS="$tar_opts" \
