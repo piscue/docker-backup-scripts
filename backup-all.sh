@@ -30,10 +30,3 @@ source backup-volumes.sh
 
 echo ""
 
-echo - upload to dropbox
-
-echo ""
-
-source sync-dropbox.sh
-
-echo ""
