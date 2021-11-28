@@ -6,7 +6,8 @@
 backup_path="/home/core/backups"
 #backup_path="/home/core/backups"
 tar_opts="--exclude='/var/run/*'"
-cd "${BASH_SOURCE%/*}" || exit
+cd /opt/docker-backup-scripts
+
 
 mkdir -p $backup_path
 
