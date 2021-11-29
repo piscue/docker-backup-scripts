@@ -3,7 +3,7 @@
 # by piscue
 
 # Setting variables
-backup_path="/home/core/backups"
+backup_path="/opt/backups"
 #backup_path="/home/core/backups"
 tar_opts="--exclude='/var/run/*'"
 cd /opt/docker-backup-scripts
