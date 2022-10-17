@@ -5,6 +5,10 @@
 # Setting variables
 backup_path="/home/core/backups"
 tar_opts="--exclude='/var/run/*'"
+
+# Set this to true to enable Docker upload
+docker_upload_enable=false
+
 cd "${BASH_SOURCE%/*}" || exit
 
 mkdir -p $backup_path
@@ -27,7 +31,10 @@ echo ""
 source backup-volumes.sh
 echo ""
 
-echo - upload to dropbox
-echo ""
-source sync-dropbox.sh
-echo ""
+if $docker_upload_enable
+then
+  echo - upload to dropbox
+  echo ""
+  source sync-dropbox.sh
+  echo ""
+fi
