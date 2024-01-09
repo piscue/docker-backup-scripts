@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# by piscue
-
 echo "Starting docker backup"
 echo "  - backup path: $backup_path"
 echo "  - tar options: $tar_opts"

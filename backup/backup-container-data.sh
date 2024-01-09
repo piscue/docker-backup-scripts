@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Backing up container data (inspection output)"
 echo "--------------------------------------------"
 for i in $(docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/)
