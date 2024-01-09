@@ -1,3 +1,6 @@
+echo "Backing up container images"
+echo "---------------------------"
+
 for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         do container_name=$i
         echo -n "$container_name - "
@@ -7,3 +10,5 @@ for i in `docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/`
         docker save -o $save_file $container_image
         echo "OK"
 done
+
+echo ""

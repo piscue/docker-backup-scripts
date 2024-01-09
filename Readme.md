@@ -10,29 +10,48 @@ remove the backup files after to save space
 
 ## Setup and Usage
 
-Check inside **backup-all.sh** to set the **backup_path** variable point at
-your current backup folder
+This script use flags for configuration. The flags are:
+
+- **-m** to set the mode (backup or restore)
+- **-b** to set the backup path
+- **-t** to set the tar options
+- **-u** to upload to dropbox
+- **-f** to force
+- **-s** to run in non-interactive mode
 
 Also, on dropbox you must create an App to store this backups, refer to
 https://www.dropbox.com/developers to get your **Generated access token**
 before running it and placed inside the **config/dropbox-uploader.conf** file
 
 Give permissions to all sh files in the folder
+
 ```bash
 cd docker-backup-scripts
 chmod +x *.sh
 ```
 
 Run the backup
+
 ```bash
-./backup-all.sh
+./backup-manager.sh -p <output-path> -m backup
+```
+
+Run the restoration
+
+```bash
+./backup-manager.sh -p <backup-path> -m restore
 ```
 
 ## Extra
 
-If you need only a local backup
-you can comment the line **source sync-dropbox.sh** on **backup-all.sh**
+Create a cron if you want to run it often (use the -s flag to run it in non-interactive mode)
 
-Create a cron if you want to run it often.
+```bash
+crontab -e
+```
+
+```bash
+0 0 * * * /path/to/backup-manager.sh -p <output-path> -m backup -s
+```
 
 For CoreOS, I supply a timer to allow run it daily with an installation script
