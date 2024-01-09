@@ -2,45 +2,6 @@
 
 # by piscue
 
-
-# Setting flags
-
-# -s : non-interactive mode
-# -p : backup path
-# -t : tar options
-# -u : upload to dropbox
-
-non_interactive=false
-backup_path="/home/core/backups"
-tar_opts="--exclude='/var/run/*'"
-docker_upload_enable=false
-force=false
-
-while getopts "sp:t:uf" opt; do
-  case $opt in
-    s)
-      non_interactive=true
-      ;;
-    p)
-      backup_path=$OPTARG
-      ;;
-    t)
-      tar_opts=$OPTARG
-      ;;
-    u)
-      docker_upload_enable=true
-      ;;
-    f)
-      force=true
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      ;;
-  esac
-done
-
-cd "${BASH_SOURCE%/*}" || exit
-
 echo "Starting docker backup"
 echo "  - backup path: $backup_path"
 echo "  - tar options: $tar_opts"
@@ -104,17 +65,17 @@ fi
 
 if [ "$backup_container_data" = "y" ]
 then
-  source backup-container-data.sh
+  source backup/backup-container-data.sh
 fi
 
 if [ "$backup_container_images" = "y" ]
 then
-  source backup-images.sh
+  source backup/backup-images.sh
 fi
 
 if [ "$backup_volumes" = "y" ]
 then
-  source backup-volumes.sh
+  source backup/backup-volumes.sh
 fi
 
 if [ "$compress_backup" = "y" ]
@@ -142,6 +103,6 @@ if [ "$docker_upload_enable" = true ]
 then
   echo - upload to dropbox
   echo ""
-  source sync-dropbox.sh
+  source backup/sync-dropbox.sh
   echo ""
 fi
