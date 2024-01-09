@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# by piscue
-
 # setup path of scripts
 # know where backup-all.sh will be stored
 
@@ -13,7 +11,7 @@ sudo cp -R config /opt/bin
 sudo chmod +x /opt/bin/*sh
 
 # copy service and time to the system
-cd coreos-timer
+cd coreos-timer || exit
 sudo cp backup-containers* /etc/systemd/system/
 
 # enabling timer
