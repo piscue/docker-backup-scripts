@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# by piscue
-
 echo "Starting docker restore"
 echo ""
 
