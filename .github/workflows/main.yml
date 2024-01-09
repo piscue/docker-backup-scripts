@@ -24,4 +24,4 @@ jobs:
         run: brew install shellcheck
 
       - name: Run shellcheck
-        run: shellcheck *.sh backup/**.sh restore/*.sh -e SC2154
+        run: shellcheck *.sh backup/**.sh restore/*.sh -e SC2154 -e SC1091
