@@ -7,7 +7,9 @@
 echo "Volumes restaurations"
 echo "------------------"
 
-for volume in $(ls $backup_path/volumes)
+volumes=$(ls "$backup_path/volumes")
+
+for volume in $volumes
 do
 	# Get volume name from the file name
 	volume=$(echo "$volume" | cut -f1 -d.)
