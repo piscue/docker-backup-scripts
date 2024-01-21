@@ -1,6 +1,7 @@
 #!/bin/bash
 
-for i in $(docker inspect --format='{{.Name}}' $(docker ps -q) | cut -f2 -d\/)
+docker_containers=$(docker ps -q)
+for i in $(docker inspect --format='{{.Name}}' "$docker_containers" | cut -f2 -d\/)
         do container_name=$i
 
         # Creating container folder
