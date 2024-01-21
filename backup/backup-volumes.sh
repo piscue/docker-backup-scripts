@@ -6,8 +6,7 @@
 echo "Backing up volumes"
 echo "------------------"
 
-docker_volumes=$(docker volume ls -q)
-for volume in $(docker volume inspect -f '"{{.Name}}""{{.Mountpoint}}"' "$docker_volumes")
+for volume in $(docker volume ls -q | xargs docker volume inspect -f '"{{.Name}}""{{.Mountpoint}}"')
 do
 	# Get the volume name and path
 	volume_name=$(echo "$volume" | cut -f2 -d\")

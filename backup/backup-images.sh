@@ -3,8 +3,7 @@
 echo "Backing up container images"
 echo "---------------------------"
 
-docker_containers=$(docker ps -q)
-for i in $(docker inspect --format='{{.Name}}' "$docker_containers"| cut -f2 -d/)
+for i in $(docker ps -q | xargs docker inspect --format='{{.Name}}' | cut -f2 -d/)
         do container_name=$i
         echo -n "$container_name - "
         container_image=$(docker inspect --format='{{.Config.Image}}' "$container_name")
