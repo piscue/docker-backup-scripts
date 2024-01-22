@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# by piscue
-
 echo "Starting docker backup"
 echo "  - backup path: $backup_path"
 echo "  - tar options: $tar_opts"
@@ -11,8 +9,7 @@ echo ""
 if [ ! -d "$backup_path" ]
 then
   # Attempt to create the directory
-  mkdir -p "$backup_path"
-  if [ $? -ne 0 ]
+  if ! mkdir -p "$backup_path"
   then
     echo "Error: backup path does not exist and could not be created"
     exit 1
@@ -32,8 +29,7 @@ else
   fi
 
   # Check if backup path is writable
-  touch "$backup_path/test.txt" 2>/dev/null
-  if [ $? -ne 0 ]
+  if ! touch "$backup_path/test.txt" 2>/dev/null
   then
     echo "Error: backup path is not writable"
     exit 1
