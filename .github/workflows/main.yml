@@ -13,16 +13,13 @@ on:
 jobs:
   # ── Fast: lint + stub-based unit tests (no daemon required) ──────────────
   unit:
-    runs-on: macos-13
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Update brew
-        run: brew update
-
       - name: Install dependencies
-        run: brew install shellcheck bats-core jq
+        run: sudo apt-get install -y shellcheck bats jq
 
       - name: Run shellcheck
         run: >
