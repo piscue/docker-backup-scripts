@@ -1,0 +1,46 @@
+[
+  {
+    "Id": "abc123def456",
+    "Name": "/test-container",
+    "Config": {
+      "Image": "nginx:latest",
+      "Env": ["FOO=bar"],
+      "Cmd": null
+    },
+    "HostConfig": {
+      "Binds": [
+        "/host/config:/app/config:ro",
+        "/host/data:/app/data"
+      ],
+      "PortBindings": {},
+      "NetworkMode": "bridge",
+      "RestartPolicy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      }
+    },
+    "Mounts": [
+      {
+        "Type": "bind",
+        "Source": "/host/config",
+        "Destination": "/app/config",
+        "Mode": "ro",
+        "RW": false
+      },
+      {
+        "Type": "bind",
+        "Source": "/host/data",
+        "Destination": "/app/data",
+        "Mode": "",
+        "RW": true
+      }
+    ],
+    "NetworkSettings": {
+      "Networks": {
+        "bridge": {
+          "IPAddress": "172.17.0.2"
+        }
+      }
+    }
+  }
+]

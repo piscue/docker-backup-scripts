@@ -11,7 +11,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  # ── Fast: lint + stub-based unit tests (no daemon required) ──────────────
+  unit:
     runs-on: macos-13
 
     steps:
@@ -20,8 +21,24 @@ jobs:
       - name: Update brew
         run: brew update
 
-      - name: Install shellcheck
-        run: brew install shellcheck
+      - name: Install dependencies
+        run: brew install shellcheck bats-core jq
 
       - name: Run shellcheck
-        run: shellcheck *.sh backup/**.sh restore/*.sh -e SC2154 -e SC1091
+        run: >
+          shellcheck *.sh backup/**.sh restore/*.sh
+          test/integration/*.sh
+          -e SC2154 -e SC1091 -e SC2317
+
+      - name: Run unit tests (stub-based, no daemon)
+        run: bats test/*.bats
+
+  # ── Real: full backup → wipe → restore → verify inside dind ──────────────
+  integration:
+    runs-on: ubuntu-latest   # ubuntu runners support privileged containers
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run integration tests (Docker-in-Docker)
+        run: bash test/integration/run.sh

@@ -1,43 +1,67 @@
 #!/bin/bash
 
-docker_containers=$(docker ps -q)
-for i in $(docker inspect --format='{{.Name}}' "$docker_containers" | cut -f2 -d/)
-        do container_name=$i
+# Path: sync-dropbox.sh
+# Upload the backup directory to Dropbox and remove local files after a
+# successful upload.  Requires a valid config/dropbox_uploader.conf.
 
-        # Creating container folder
-        docker run --rm --user="$(id -u)":"$(id -g)" \
-        -v "$PWD"/config:/config \
-        -v "$backup_path":/workdir \
-        peez/dropbox-uploader \
-        mkdir "$container_name"
+echo "Syncing to Dropbox"
+echo "------------------"
 
-        # Uploading image
-        echo "$container_name - image to Dropbox "
-        # TODO check if the file exists
-        docker run --rm --user="$(id -u)":"$(id -g)" \
-        --name "dropbox-$container_name-image-backup" \
-        -v "$PWD"/config:/config \
-        -v "$backup_path":/workdir \
-        peez/dropbox-uploader \
-        upload "$container_name"/"$container_name-image.tar" \
-        "$container_name"/"$container_name-image.tar" && \
+_dropbox_mkdir() {
+  docker run --rm --user="$(id -u)":"$(id -g)" \
+    -v "$PWD/config":/config \
+    -v "$backup_path":/workdir \
+    peez/dropbox-uploader \
+    mkdir "$1" 2>/dev/null || true
+}
 
-        # remove local image, TODO creating a condition to know if the file
-        # uploaded well before deleting
-        rm -f "$backup_path"/"$container_name"/"$container_name-image.tar"
+_dropbox_upload() {
+  local src="$1"   # path relative to $backup_path
+  local dest="$2"  # path in Dropbox
+  docker run --rm --user="$(id -u)":"$(id -g)" \
+    --name "dropbox-upload-$(echo "$src" | tr '/' '-')" \
+    -v "$PWD/config":/config \
+    -v "$backup_path":/workdir \
+    peez/dropbox-uploader \
+    upload "$src" "$dest"
+}
 
-        # Uploading volume
-        echo "$container_name - volume to Dropbox "
-        # TODO check if the file exists
-        docker run --rm --user="$(id -u)":"$(id -g)" \
-        --name "dropbox-$container_name-volume-backup" \
-        -v "$PWD"/config:/config \
-        -v "$backup_path":/workdir \
-        peez/dropbox-uploader \
-        upload "$container_name"/"$container_name-volume.tar.xz" \
-        "$container_name"/"$container_name-volume.tar.xz" && \
+# Upload per-volume tar archives
+if [ -d "$backup_path/volumes" ]; then
+  _dropbox_mkdir "volumes"
 
-        # remove local volume, TODO creating a condition to know if the file
-        # uploaded well before deleting
-        rm -f "$backup_path"/"$container_name"/"$container_name-volume.tar.xz"
+  for vol_file in "$backup_path/volumes/"*.tar.gz; do
+    [ -e "$vol_file" ] || continue
+    filename=$(basename "$vol_file")
+    echo -n "volumes/$filename - "
+    if _dropbox_upload "volumes/$filename" "volumes/$filename"; then
+      rm -f "$vol_file"
+      echo "OK"
+    else
+      echo "FAILED"
+    fi
+  done
+fi
+
+# Upload per-container image and inspect-data files
+for container_dir in "$backup_path"/*/; do
+  [ -d "$container_dir" ] || continue
+  container_name=$(basename "$container_dir")
+  [ "$container_name" = "volumes" ] && continue
+
+  _dropbox_mkdir "$container_name"
+
+  for file in "$container_dir"*; do
+    [ -e "$file" ] || continue
+    filename=$(basename "$file")
+    echo -n "$container_name/$filename - "
+    if _dropbox_upload "$container_name/$filename" "$container_name/$filename"; then
+      rm -f "$file"
+      echo "OK"
+    else
+      echo "FAILED"
+    fi
+  done
 done
+
+echo ""

@@ -50,12 +50,16 @@ then
   echo "Backup volumes ? (y/n)"
   read -r backup_volumes
 
+  echo "Backup bind-mounted host paths ? (y/n) [requires read access to those paths]"
+  read -r backup_bind_mounts
+
   echo "Should I compress the backup directory ? (y/n)"
   read -r compress_backup
 else
   backup_container_data="y"
   backup_container_images="y"
   backup_volumes="y"
+  backup_bind_mounts=$([ "$bind_mounts_enable" = true ] && echo "y" || echo "n")
   compress_backup="n"
 fi
 
@@ -74,10 +78,16 @@ then
   source backup/backup-volumes.sh
 fi
 
+if [ "$backup_bind_mounts" = "y" ]
+then
+  source backup/backup-bind-mounts.sh
+fi
+
 if [ "$compress_backup" = "y" ]
 then
   echo -n "Compressing backup directory - "
-  tar -czf "$backup_path.tar.gz" "$backup_path" >/dev/null 2>&1
+  # shellcheck disable=SC2086
+  tar $tar_opts -czf "$backup_path.tar.gz" "$backup_path" >/dev/null 2>&1
   echo "OK"
 
   echo -n "Removing backup directory - "
