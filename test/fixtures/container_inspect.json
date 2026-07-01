@@ -1,0 +1,56 @@
+[
+  {
+    "Id": "abc123def456",
+    "Name": "/test-container",
+    "Config": {
+      "Image": "nginx:latest",
+      "Env": [
+        "FOO=bar",
+        "BAZ=qux"
+      ],
+      "Cmd": null
+    },
+    "HostConfig": {
+      "Binds": [
+        "/host/data:/container/data:ro"
+      ],
+      "PortBindings": {
+        "80/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "8080"
+          }
+        ],
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8443"
+          }
+        ]
+      },
+      "NetworkMode": "mynetwork",
+      "RestartPolicy": {
+        "Name": "always",
+        "MaximumRetryCount": 0
+      }
+    },
+    "Mounts": [
+      {
+        "Type": "volume",
+        "Name": "myvolume",
+        "Source": "/var/lib/docker/volumes/myvolume/_data",
+        "Destination": "/data",
+        "Driver": "local",
+        "Mode": "",
+        "RW": true
+      }
+    ],
+    "NetworkSettings": {
+      "Networks": {
+        "mynetwork": {
+          "IPAddress": "172.18.0.2"
+        }
+      }
+    }
+  }
+]

@@ -21,12 +21,13 @@ cd "${BASH_SOURCE%/*}" || exit
 
 non_interactive=false
 backup_path="/home/core/backups"
-tar_opts="--exclude='/var/run/*'"
+tar_opts="--exclude=/var/run/*"
 docker_upload_enable=false
 force=false
 mode=""
+bind_mounts_enable=false
 
-while getopts "sp:t:ufm:" opt; do
+while getopts "sp:t:ufm:B" opt; do
   case $opt in
     s)
       non_interactive=true
@@ -46,6 +47,9 @@ while getopts "sp:t:ufm:" opt; do
     m)
         mode=$OPTARG
         ;;
+    B)
+      bind_mounts_enable=true
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       ;;

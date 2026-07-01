@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+# Docker stub for bats tests.
+# Records every invocation to $DOCKER_LOG (if set).
+# Returns canned responses based on the subcommand.
+#
+# Tuneable env vars:
+#   DOCKER_LOG            – file to append "docker <args>" lines to
+#   STUB_VOLUME_MOUNT     – fake mountpoint prefix for volumes (default /mnt/volumes)
+#   STUB_VOLUMES          – space-separated list of fake volume names
+#                           (default: vol1 vol2 my.dotted.vol)
+#   STUB_CONTAINERS       – space-separated list of fake running container names
+#   STUB_CONTAINER_EXISTS – set to "true" to make `docker inspect <name>` succeed
+#   STUB_INSPECT_FILE     – path to a JSON file returned by `docker inspect <name>`
+#   STUB_BIND_SOURCES     – newline-separated host paths to return as bind-mount sources
+
+if [ -n "$DOCKER_LOG" ]; then
+  echo "docker $*" >> "$DOCKER_LOG"
+fi
+
+subcmd="$1"
+sub2="$2"
+
+case "$subcmd" in
+  volume)
+    case "$sub2" in
+      ls)
+        # Output one volume name per line
+        for v in ${STUB_VOLUMES:-vol1 vol2 my.dotted.vol}; do
+          echo "$v"
+        done
+        ;;
+      inspect)
+        # Args: volume inspect -f FORMAT vol1 vol2 ...
+        # Positions: $1=volume $2=inspect $3=-f $4=format, then names
+        shift 4
+        for v in "$@"; do
+          printf '"%s""%s/%s"\n' \
+            "$v" \
+            "${STUB_VOLUME_MOUNT:-/mnt/volumes}" \
+            "$v"
+        done
+        ;;
+      create)
+        # Succeed silently
+        ;;
+    esac
+    ;;
+
+  ps)
+    # docker ps -q  → print fake container IDs
+    shift
+    if [ "$1" = "-q" ]; then
+      ps_id=1
+      for c in ${STUB_CONTAINERS:-test-container}; do
+        printf 'fakeid%d\n' "$ps_id"
+        ps_id=$((ps_id + 1))
+      done
+    fi
+    ;;
+
+  inspect)
+    # Handles two forms:
+    #   docker inspect --format='{{.Name}}' ID ...  → container name listing
+    #   docker inspect NAME                          → full JSON (for bind-mount backup or existence check)
+    if [[ "$2" == "--format"* ]] || [ "$2" = "-f" ]; then
+      # Format can be --format=VALUE (one arg) or --format VALUE (two args)
+      if [[ "$2" == "--format="* ]]; then
+        fmt="${2#--format=}"
+        shift 2  # skip: inspect --format=VALUE; remaining are IDs/names
+      else
+        fmt="$3"
+        shift 3  # skip: inspect --format VALUE; remaining are IDs/names
+      fi
+      if echo "$fmt" | grep -q 'Mounts\|Source\|bind'; then
+        # Bind-mount source listing used by backup-bind-mounts.sh
+        # Return STUB_BIND_SOURCES (one path per line), empty if not set
+        if [ -n "$STUB_BIND_SOURCES" ]; then
+          printf '%s\n' "$STUB_BIND_SOURCES"
+        fi
+      else
+        # Container name listing used by backup-images/container-data/bind-mounts
+        idx=1
+        for cid in "$@"; do
+          containers=( ${STUB_CONTAINERS:-test-container} )
+          cname="${containers[$((idx-1))]}"
+          echo "/$cname"
+          idx=$((idx + 1))
+        done
+      fi
+    elif [ -n "$STUB_INSPECT_FILE" ] && [ -f "$STUB_INSPECT_FILE" ]; then
+      # Return canned inspect JSON (used by backup-bind-mounts and restore-containers)
+      cat "$STUB_INSPECT_FILE"
+    elif [ "${STUB_CONTAINER_EXISTS:-false}" = "true" ]; then
+      echo "[]"
+    else
+      echo "Error: No such container: ${*: -1}" >&2
+      exit 1
+    fi
+    ;;
+
+  run)
+    # Succeed for all docker run invocations (busybox tar, container recreation, etc.)
+    # For backup-bind-mounts, the script uses the host tar directly, not docker run.
+    ;;
+
+  load)
+    # docker load -i FILE
+    echo "Loaded image: stub-image:latest"
+    ;;
+
+  save)
+    # docker save -o FILE IMAGE – create an empty file so callers don't fail
+    outfile=""
+    while [ $# -gt 0 ]; do
+      if [ "$1" = "-o" ]; then
+        outfile="$2"
+        shift 2
+      else
+        shift
+      fi
+    done
+    [ -n "$outfile" ] && touch "$outfile"
+    ;;
+
+  rm)
+    # docker rm -f NAME – succeed
+    ;;
+
+  *)
+    # Unknown subcommand – succeed silently
+    ;;
+esac
